@@ -44,22 +44,17 @@
                         </div>
                         <div class="column has-text-centered">
                             <div class="publication-links">
-                                <div class="publication-links"> <span class="link-block"> <button id="pubBtn"
-                                            class="button external-link is-dark is-normal is-rounded"> <span
+                                <div class="publication-links"> <span class="link-block"> <a href="https://github.com/3F7DFC/FastVidar" target="_blank" rel="noopener" class="button external-link is-dark is-normal is-rounded"> <span
                                                 class="icon"> <i class="fa-file-pdf fas"></i> </span> <span>Paper</span>
-                                        </button> </span> <span class="link-block"> <button id="arxivBtn"
-                                            class="button external-link is-dark is-normal is-rounded"> <span
+                                        </a> </span> <span class="link-block"> <a href="https://github.com/3F7DFC/FastVidar" target="_blank" rel="noopener" class="button external-link is-dark is-normal is-rounded"> <span
                                                 class="icon"> <i class="ai ai-arxiv"></i> </span> <span>arXiv</span>
-                                        </button> </span> <span class="link-block"> <button id="videoBtn"
-                                            class="button external-link is-dark is-normal is-rounded"> <span
+                                        </a> </span> <span class="link-block"> <a href="https://github.com/3F7DFC/FastVidar" target="_blank" rel="noopener" class="button external-link is-dark is-normal is-rounded"> <span
                                                 class="icon"> <i class="fa-youtube fab"></i> </span> <span>Video</span>
-                                        </button> </span> <span class="link-block"> <button id="codeBtn"
-                                            class="button external-link is-dark is-normal is-rounded"> <span
+                                        </a> </span> <span class="link-block"> <a href="https://github.com/3F7DFC/FastVidar" target="_blank" rel="noopener" class="button external-link is-dark is-normal is-rounded"> <span
                                                 class="icon"> <i class="fa-github fab"></i> </span> <span>Code</span>
-                                        </button> </span> <span class="link-block"> <button id="dataBtn"
-                                            class="button external-link is-dark is-normal is-rounded"> <span
+                                        </a> </span> <span class="link-block"> <a href="https://github.com/3F7DFC/FastVidar" target="_blank" rel="noopener" class="button external-link is-dark is-normal is-rounded"> <span
                                                 class="icon"> <i class="fa-images far"></i> </span> <span>Data</span>
-                                        </button> </span> </div>
+                                        </a> </span> </div>
                             </div>
                         </div>
                     </div>
@@ -122,7 +117,7 @@
         <div class="container is-max-desktop">
             <div class="columns is-centered">
                 <div class="column is-full-width">
-                    <h2 class="is-3 title">Framework</h2>
+                    <h2 class="is-3 title has-text-centered">Framework</h2>
                     <p class="content">FastViDAR employs Alternative Hierarchical Attention (AHA) with ERP-centric
                         processing and ERP fusion for seamless 360° depth. The pipeline alternates local window
                         attention with per-frame/global summary attention and fuses multi-view depth on a shared ERP
@@ -218,7 +213,7 @@
             <figure class="has-text-centered is-centered video-item-full-container">
                 <p> This video demonstrates the performance achieved by training on the <b>Sunny Subset of</b> the <a
                         href="https://rvlab.snu.ac.kr/research/omnistereo">Omnidirectional Stereo Dataset</a> training
-                    set and evaluating on the test set. Layout: <strong>Top left</strong> ERP-converted inputs;
+                    set and evaluating on the test set. </p> Layout: <strong>Top left</strong> ERP-converted inputs;
                     <strong>Bottom left</strong> omnidirectional depth maps (ERP); <strong>Top right</strong> colored
                     BEV point cloud; <strong>Bottom right</strong> colored FPV.
                 </p>
@@ -231,15 +226,17 @@
     </section>
 
     <!-- Zero-shot Gallery (white background) -->
+     
     <section class="section">
         <div class="video-gallery-grey">
+            <figure class="has-text-centered is-centered video-item-full-container">
             <h2 class="is-3 title">Zero-shot Results</h2>
             <!-- Part 1: Lazy-loaded 4x4 PLY Viewer Grid -->
             <h3 class="is-4 title">Part I: Fused Point Clouds (PLY)</h3>
-            <p>Trained on HM3D; zero-shot evaluated on 2D3D-S, indicating generalization capability.</p>
-            <p>Click on the point cloud to interact with the viewer.</p>
-
-            <div id="ply-grid" class="ply-grid"></div>
+            <p>Trained on <a href="https://aihabitat.org/datasets/hm3d/">HM3D</a>; zero-shot evaluated on <a href="https://cvgl.stanford.edu/resources.html">2D3D-S</a>, indicating <b>generalization capability</b>.</p>
+            <p>Click the point cloud visualization window to enter interactive mode.</p>
+            
+            <div id="ply-grid" class="ply-grid"></div></figure>
             <!-- Part 2: Qualitative Depth Maps -->
             <h3 class="is-4 title" style="margin-top:1.5rem;">Part II: Omnidirectional Depth-based Mapping using
                 Odometry In The Wild</h3>
@@ -367,6 +364,80 @@
             text-align: center;
         }
 
+        /* Spacing optimizations */
+        .content + .fig-gallery { /* paragraph description before figures */
+            margin-top: 1rem;
+        }
+
+        .fig-gallery { /* ensure gallery block doesn't stick to previous elements */
+            margin-top: 1rem;
+        }
+
+        .video-gallery-grey p { /* readable paragraph spacing in grey sections */
+            margin-bottom: 0.85rem;
+        }
+
+        .video-item-full-container, /* full-width video figure */
+        .has-text-centered.video-item-full-container {
+            margin-top: 1rem;
+        }
+
+        /* Extra gap between Part I (PLY grid) and Part II title */
+        #ply-grid {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        #ply-grid + h3 { /* Part II heading */
+            margin-top: 2rem;
+        }
+
+        /* Headings spacing harmonization inside grey/white blocks */
+        .video-gallery-grey h2,
+        .video-gallery-white h2 {
+            margin-bottom: 1rem;
+        }
+        .video-gallery-grey h3,
+        .video-gallery-white h3 {
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Unified text-media spacing across sections */
+        figure { /* default figure spacing */
+            margin: 1rem 0;
+        }
+
+        /* paragraph followed by media/figure/galleries */
+        p + img,
+        p + video,
+        p + figure,
+        p + .fig-gallery {
+            margin-top: 0.75rem;
+        }
+
+        /* media inside full-width figure */
+        .video-item-full-container p {
+            margin-bottom: 0.75rem;
+        }
+        .video-full-item {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin-top: 0.75rem;
+        }
+
+        /* tighten spacing in the in-domain figure block */
+        .video-gallery-white .video-item-full-container {
+            margin-top: 0.75rem;
+        }
+        .video-item-full-container > p:first-child {
+            margin-top: 0; /* kill default p top margin */
+        }
+        .video-item-full-container > *:last-child {
+            margin-bottom: 0; /* avoid extra bottom gap inside figure */
+        }
+
         @media (max-width: 1280px) {
             .fig-fixed-h {
                 height: 320px;
@@ -394,199 +465,348 @@
         }
     </style>
 
-    <!-- Lazy loader for 4x4 PLY grid -->
-    <script>
-        (function () {
-          // ===== 可调常量（无工具栏） =====
-          const FILES = [
-            '/FastVidar/plys/area_1_000577_pred_b0.ply',
-            '/FastVidar/plys/area_3_000313_pred_b0.ply',
-            '/FastVidar/plys/area_5a_002193_pred_b0.ply',
-            '/FastVidar/plys/area_3_002337_pred_b0.ply',
-            '/FastVidar/plys/area_1_001013_pred_b0.ply',
-            '/FastVidar/plys/area_3_000493_pred_b0.ply',
-            '/FastVidar/plys/area_1_001349_pred_b0.ply',
-            '/FastVidar/plys/area_1_002197_pred_b0.ply',
-            '/FastVidar/plys/area_1_002325_pred_b0.ply',
-            '/FastVidar/plys/area_5b_000113_pred_b0.ply',
-            '/FastVidar/plys/area_5b_005337_pred_b0.ply',
-            '/FastVidar/plys/area_2_002573_pred_b0.ply',
-            '/FastVidar/plys/area_2_003605_pred_b0.ply',
-            '/FastVidar/plys/area_2_004181_pred_b0.ply',
-            '/FastVidar/plys/area_2_004581_pred_b0.ply',
-            '/FastVidar/plys/area_3_002081_pred_b0.ply',
-          ];
-          const VIEW_FOV = 90;
-          const CAM_Z = 0.01;
-          const PIXEL_POINT_SIZE = 3.0; // 屏幕像素大小（禁用近大远小）
-          const BRIGHT_GAIN = 1.6;      // 线性空间亮度增益（固定）
-        
-          // ===== 轻量样式（无工具栏） =====
-          const style = document.createElement('style');
-          style.textContent = `
-            .ply-cell{position:relative}
-            .ply-caption{
-              position:absolute; left:8px; bottom:6px; z-index:1;
-              color:#fff; background:rgba(0,0,0,.45);
-              padding:2px 6px; border-radius:6px; font:12px/1.2 sans-serif;
-            }
-            .ply-canvas{width:100%; height:260px; display:block; outline:0; cursor:pointer}
-            @media(min-width:900px){ .ply-canvas{ height:320px } }
-            @media(min-width:1200px){ .ply-canvas{ height:360px } }
-          `;
-          document.head.appendChild(style);
-        
-          const container = document.getElementById('ply-grid');
-          if (!container) return;
-        
-          // 构建网格（懒加载）
-          FILES.forEach((src, idx) => {
-            const cell = document.createElement('div');
-            cell.className = 'ply-cell';
-        
-            const caption = document.createElement('div');
-            caption.className = 'ply-caption';
-            caption.textContent = `#${idx + 1}`;
-        
-            const canvas = document.createElement('canvas');
-            canvas.className = 'ply-canvas';
-            canvas.tabIndex = 0;
-        
-            cell.appendChild(canvas);
-            cell.appendChild(caption);
-            container.appendChild(cell);
-            cell.__src = src;
-          });
-        
-          const io = new IntersectionObserver((entries, obs) => {
-            entries.forEach(ent => {
-              if (ent.isIntersecting) {
-                obs.unobserve(ent.target);
-                const canvas = ent.target.querySelector('.ply-canvas');
-                const src = ent.target.__src;
-                initViewer(ent.target, canvas, src);
-              }
-            });
-          }, { rootMargin: '200px' });
-          Array.from(container.children).forEach(el => io.observe(el));
-        
-          function initViewer(cell, canvas, src) {
-            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-            renderer.outputColorSpace = THREE.SRGBColorSpace;
-            renderer.toneMapping = THREE.NoToneMapping;
-            renderer.setPixelRatio(window.devicePixelRatio || 1);
-            renderer.setClearColor(0x000000, 0);
-        
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(VIEW_FOV, canvas.clientWidth / canvas.clientHeight, 0.01, 1000);
-            scene.add(new THREE.AmbientLight(0x666666));
-            const light = new THREE.DirectionalLight(0xffffff, 0.9);
-            light.position.set(1, 1, 1); scene.add(light);
-            camera.position.set(0, 0, CAM_Z);
-        
-            const controls = new THREE.OrbitControls(camera, canvas);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.08;
-            controls.enablePan = true;
-            controls.minDistance = 0.2;
-            controls.maxDistance = 10;
-            controls.enabled = false; // 初始禁用交互
-        
-            // 自动旋转默认开；点击外面失焦后会恢复
-            let autoRotate = true;
-        
-            // —— 交互逻辑：每次点击都可进入交互（不再用 once）
-            canvas.addEventListener('pointerdown', () => {
-              controls.enabled = true;
-              autoRotate = false;
-              canvas.style.cursor = 'grab';
-            });
-        
-            // —— 失焦：点击页面其它地方 -> 退出交互并恢复旋转
-            document.addEventListener('pointerdown', (ev) => {
-              if (!cell.contains(ev.target)) {
-                controls.enabled = false;
-                autoRotate = true;
-                canvas.style.cursor = 'pointer';
-              }
-            });
-        
-            // 加载点云（不做任何裁剪/丢弃片元，保留所有点）
-            const loader = new THREE.PLYLoader();
-            loader.load(src, (geometry) => {
-              // 若没有 color 但有 r/g/b，则组装 color 并归一化
-              if (!geometry.hasAttribute('color') &&
-                  geometry.hasAttribute('red') &&
-                  geometry.hasAttribute('green') &&
-                  geometry.hasAttribute('blue')) {
-                const r = geometry.getAttribute('red').array;
-                const g = geometry.getAttribute('green').array;
-                const b = geometry.getAttribute('blue').array;
-                const n = Math.min(r.length, g.length, b.length);
-                const rgb = new Float32Array(n * 3);
-                const k = (r.BYTES_PER_ELEMENT === 1) ? 1 / 255 : 1.0;
-                for (let i = 0; i < n; i++) {
-                  rgb[3*i+0] = r[i] * k;
-                  rgb[3*i+1] = g[i] * k;
-                  rgb[3*i+2] = b[i] * k;
-                }
-                geometry.setAttribute('color', new THREE.BufferAttribute(rgb, 3));
-                // 删除 r/g/b 属性仅是节省显存，不会删点
-                geometry.deleteAttribute('red');
-                geometry.deleteAttribute('green');
-                geometry.deleteAttribute('blue');
-              }
-        
-              // sRGB -> Linear + 固定亮度增益（一次性写回；不删点）
-              if (geometry.hasAttribute('color')) {
-                const attr = geometry.getAttribute('color');
-                const arr = attr.array;
-                const tmp = new THREE.Color();
-                for (let i = 0; i < arr.length; i += 3) {
-                  tmp.setRGB(arr[i], arr[i + 1], arr[i + 2]).convertSRGBToLinear();
-                  arr[i]     = Math.min(1.0, tmp.r * BRIGHT_GAIN);
-                  arr[i + 1] = Math.min(1.0, tmp.g * BRIGHT_GAIN);
-                  arr[i + 2] = Math.min(1.0, tmp.b * BRIGHT_GAIN);
-                }
-                attr.needsUpdate = true;
-              }
-        
-              // 材质：像素大小、不随距离缩放；无任何 discard 逻辑
-              const material = new THREE.PointsMaterial({
-                size: PIXEL_POINT_SIZE,   // 像素单位
-                sizeAttenuation: false,   // 禁用近大远小
-                vertexColors: geometry.hasAttribute('color'),
-                color: 0xffffff,
-                transparent: true,
-                depthWrite: false         // 半透明叠加更自然；不删点
-              });
-        
-              const cloud = new THREE.Points(geometry, material);
-              cloud.rotation.x = Math.PI / 2; // 维持你之前的朝向
-              scene.add(cloud);
-        
-              animate();
-            });
-        
-            function resize() {
-              const w = canvas.clientWidth, h = canvas.clientHeight;
-              if (canvas.width !== w || canvas.height !== h) {
-                renderer.setSize(w, h, false);
-                camera.aspect = w / h; camera.updateProjectionMatrix();
-              }
-            }
-        
-            function animate() {
-              resize();
-              if (autoRotate) scene.rotation.y += 0.0025;
-              controls.update();
-              renderer.render(scene, camera);
-              requestAnimationFrame(animate);
-            }
+<!-- Lazy loader for 4x4 PLY grid with filtering and per-cell download link -->
+<!-- 4x4 PLY grid, English UI, hover-only Download button, per-cell Help tooltip, depth/color filtering -->
+
+
+
+
+
+<!-- 4x4 PLY grid, English UI, hover-only Download + Help icon, Help tooltip, depth/color filtering -->
+<script>
+    (function () {
+      // ===== Config =====
+      const FILES = [
+        '/FastVidar/plys/area_1_000577_pred_b0.ply',
+        '/FastVidar/plys/area_3_000313_pred_b0.ply',
+        '/FastVidar/plys/area_5a_002193_pred_b0.ply',
+        '/FastVidar/plys/area_3_002337_pred_b0.ply',
+        '/FastVidar/plys/area_1_001013_pred_b0.ply',
+        '/FastVidar/plys/area_3_000493_pred_b0.ply',
+        '/FastVidar/plys/area_1_001349_pred_b0.ply',
+        '/FastVidar/plys/area_1_002197_pred_b0.ply',
+        '/FastVidar/plys/area_1_002325_pred_b0.ply',
+        '/FastVidar/plys/area_5b_000113_pred_b0.ply',
+        '/FastVidar/plys/area_5b_005337_pred_b0.ply',
+        '/FastVidar/plys/area_2_002573_pred_b0.ply',
+        '/FastVidar/plys/area_2_003605_pred_b0.ply',
+        '/FastVidar/plys/area_2_004181_pred_b0.ply',
+        '/FastVidar/plys/area_2_004581_pred_b0.ply',
+        '/FastVidar/plys/area_3_002081_pred_b0.ply',
+      ];
+      const VIEW_FOV = 90;
+      const CAM_Z = 0.01;                 // camera at (0,0,0.01)
+      const PIXEL_POINT_SIZE = 3.0;       // fixed on-screen px (no size attenuation)
+      const BRIGHT_GAIN = 1.6;            // linear-space brightness gain (one-time bake)
+    
+      // Filtering rule
+      const MIN_DEPTH = 0.01;             // keep points with distance(camera, point) >= 0.01
+      const REJECT_BLACK = true;          // drop points whose color is exactly (0,0,0)
+    
+      // ===== Styles =====
+      const style = document.createElement('style');
+      style.textContent = `
+        .ply-cell{position:relative}
+        .ply-caption{
+          position:absolute; left:8px; bottom:6px; z-index:1;
+          color:#fff; background:rgba(0,0,0,.45);
+          padding:2px 6px; border-radius:6px; font:12px/1.2 sans-serif;
+        }
+        .ply-download{
+          position:absolute; right:8px; bottom:6px; z-index:2;
+          color:#fff; text-decoration:none; user-select:none;
+          background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.25);
+          padding:2px 6px; border-radius:6px; font:12px/1.2 sans-serif;
+          opacity:0; visibility:hidden; transition:opacity .15s ease;
+        }
+        .ply-cell:hover .ply-download{ opacity:1; visibility:visible }
+        .ply-download:hover{ background:rgba(0,0,0,.75) }
+    
+        /* Help icon is hidden until hover, like Download */
+        .ply-help{
+          position:absolute; right:8px; top:6px; z-index:2;
+          width:20px; height:20px; border-radius:50%;
+          background:rgba(0,0,0,.55); color:#fff; display:flex;
+          align-items:center; justify-content:center; font:12px/1.2 sans-serif;
+          border:1px solid rgba(255,255,255,.25); cursor:help;
+          user-select:none;
+          opacity:0; visibility:hidden; transition:opacity .15s ease;
+        }
+        .ply-cell:hover .ply-help{ opacity:1; visibility:visible }
+    
+        .ply-help-panel{
+          position:absolute; right:8px; top:30px; z-index:3;
+          max-width:260px; color:#fff; background:rgba(0,0,0,.85);
+          border:1px solid rgba(255,255,255,.25); border-radius:8px;
+          padding:8px 10px; font:12px/1.45 sans-serif; line-height:1.45;
+          box-shadow:0 6px 16px rgba(0,0,0,.35);
+          opacity:0; visibility:hidden; transition:opacity .12s ease;
+        }
+        .ply-help[aria-expanded="true"] + .ply-help-panel{ opacity:1; visibility:visible }
+    
+        .ply-canvas{width:100%; height:260px; display:block; outline:0; cursor:pointer}
+        @media(min-width:900px){ .ply-canvas{ height:320px } }
+        @media(min-width:1200px){ .ply-canvas{ height:360px } }
+      `;
+      document.head.appendChild(style);
+    
+      const container = document.getElementById('ply-grid');
+      if (!container) return;
+    
+      // Build grid (lazy load)
+      FILES.forEach((src, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'ply-cell';
+    
+        // bottom-left index label (#N)
+        const caption = document.createElement('div');
+        caption.className = 'ply-caption';
+        caption.textContent = `#${idx + 1}`;
+    
+        // bottom-right hover-only download link
+        const dl = document.createElement('a');
+        dl.className = 'ply-download';
+        const fname = src.split('/').pop();
+        dl.textContent = 'Download';
+        dl.href = src;         // relies on server to serve the file
+        dl.download = fname;   // hint for filename
+        dl.title = `Download ${fname}`;
+    
+        // top-right help icon + tooltip (icon hidden until hover)
+        const help = document.createElement('div');
+        help.className = 'ply-help';
+        help.setAttribute('role', 'button');
+        help.setAttribute('aria-label', 'Viewer help');
+        help.setAttribute('aria-expanded', 'false');
+        help.textContent = '?';
+    
+        const helpPanel = document.createElement('div');
+        helpPanel.className = 'ply-help-panel';
+        helpPanel.innerHTML = `
+          <strong>How to interact</strong><br>
+          • Click the canvas to enable interaction.<br>
+          • Left-drag: orbit / rotate.<br>
+          • Right-drag or Ctrl-drag: pan.<br>
+          • Mouse wheel / pinch: zoom.<br>
+          • Click outside the cell to exit interaction and resume auto-rotation.<br>
+          <br>
+          <strong>Notes</strong><br>
+          • Point size is fixed in screen pixels.<br>
+          • Hover the bottom-right corner to reveal the <em>Download</em> button.
+        `;
+    
+        const canvas = document.createElement('canvas');
+        canvas.className = 'ply-canvas';
+        canvas.tabIndex = 0;
+    
+        // toggle help on click; close when clicking elsewhere
+        help.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const expanded = help.getAttribute('aria-expanded') === 'true';
+          help.setAttribute('aria-expanded', String(!expanded));
+        });
+        document.addEventListener('pointerdown', (e) => {
+          if (!cell.contains(e.target)) {
+            help.setAttribute('aria-expanded', 'false');
           }
-        })();
-        </script>
-        
+        });
+    
+        cell.appendChild(canvas);
+        cell.appendChild(caption);
+        cell.appendChild(dl);
+        cell.appendChild(help);
+        cell.appendChild(helpPanel);
+        container.appendChild(cell);
+    
+        cell.__src = src;
+      });
+    
+      const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach(ent => {
+          if (ent.isIntersecting) {
+            obs.unobserve(ent.target);
+            const canvas = ent.target.querySelector('.ply-canvas');
+            const src = ent.target.__src;
+            initViewer(ent.target, canvas, src);
+          }
+        });
+      }, { rootMargin: '200px' });
+      Array.from(container.children).forEach(el => io.observe(el));
+    
+      function initViewer(cell, canvas, src) {
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.NoToneMapping;
+        renderer.setPixelRatio(window.devicePixelRatio || 1);
+        renderer.setClearColor(0x000000, 0);
+    
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(VIEW_FOV, canvas.clientWidth / canvas.clientHeight, 0.001, 1000);
+        scene.add(new THREE.AmbientLight(0x666666));
+        const light = new THREE.DirectionalLight(0xffffff, 0.9);
+        light.position.set(1, 1, 1); scene.add(light);
+        camera.position.set(0, 0, CAM_Z);
+    
+        const controls = new THREE.OrbitControls(camera, canvas);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.08;
+        controls.enablePan = true;
+        controls.minDistance = 0.001;
+        controls.maxDistance = 10;
+        controls.enabled = false; // start disabled
+    
+        let autoRotate = true;    // start auto-rotating; click to interact, blur to resume
+    
+        // click -> enter interaction (stop autorotate); can re-enter on subsequent clicks
+        canvas.addEventListener('pointerdown', () => {
+          controls.enabled = true;
+          autoRotate = false;
+          canvas.style.cursor = 'grab';
+        });
+    
+        // blur: click outside this cell -> exit interaction & resume autorotate
+        document.addEventListener('pointerdown', (ev) => {
+          if (!cell.contains(ev.target)) {
+            controls.enabled = false;
+            autoRotate = true;
+            canvas.style.cursor = 'pointer';
+          }
+        });
+    
+        const loader = new THREE.PLYLoader();
+        loader.load(src, (geometry) => {
+          // Compose color if only r/g/b exist
+          if (!geometry.hasAttribute('color') &&
+              geometry.hasAttribute('red') &&
+              geometry.hasAttribute('green') &&
+              geometry.hasAttribute('blue')) {
+            const r = geometry.getAttribute('red').array;
+            const g = geometry.getAttribute('green').array;
+            const b = geometry.getAttribute('blue').array;
+            const n = Math.min(r.length, g.length, b.length);
+            const rgb = new Float32Array(n * 3);
+            const k = (r.BYTES_PER_ELEMENT === 1) ? 1 / 255 : 1.0;
+            for (let i = 0; i < n; i++) {
+              rgb[3*i+0] = r[i] * k;
+              rgb[3*i+1] = g[i] * k;
+              rgb[3*i+2] = b[i] * k;
+            }
+            geometry.setAttribute('color', new THREE.BufferAttribute(rgb, 3));
+            geometry.deleteAttribute('red');
+            geometry.deleteAttribute('green');
+            geometry.deleteAttribute('blue');
+          }
+    
+          // sRGB -> Linear + one-time brightness gain
+          if (geometry.hasAttribute('color')) {
+            const attr = geometry.getAttribute('color');
+            const arr = attr.array;
+            const tmp = new THREE.Color();
+            for (let i = 0; i < arr.length; i += 3) {
+              tmp.setRGB(arr[i], arr[i + 1], arr[i + 2]).convertSRGBToLinear();
+              arr[i]     = Math.min(1.0, tmp.r * BRIGHT_GAIN);
+              arr[i + 1] = Math.min(1.0, tmp.g * BRIGHT_GAIN);
+              arr[i + 2] = Math.min(1.0, tmp.b * BRIGHT_GAIN);
+            }
+            attr.needsUpdate = true;
+          }
+    
+          // ===== Filter points by depth & color =====
+          const posAttr = geometry.getAttribute('position');
+          const pos = posAttr.array; // Float32Array length = 3*N
+          const hasColor = geometry.hasAttribute('color');
+          const colAttr = hasColor ? geometry.getAttribute('color') : null;
+          const col = hasColor ? colAttr.array : null;
+    
+          const N = pos.length / 3;
+          let keepCount = 0;
+          const camZ = CAM_Z;
+    
+          // First pass: count
+          for (let i = 0; i < N; i++) {
+            const ix = 3*i;
+            const x = pos[ix], y = pos[ix+1], z = pos[ix+2];
+            const dx = x, dy = y, dz = z - camZ;
+            const depth = Math.hypot(dx, dy, dz);
+            if (depth < MIN_DEPTH) continue;
+            if (REJECT_BLACK && hasColor) {
+              if ((col[ix] === 0 || col[ix] === 0.0) && (col[ix+1] === 0 || col[ix+1] === 0.0) && (col[ix+2] === 0 || col[ix+2] === 0.0)) {
+                continue;
+              }
+            }
+            keepCount++;
+          }
+    
+          // Second pass: write compact buffers
+          const newPos = new Float32Array(keepCount * 3);
+          const newCol = hasColor ? new Float32Array(keepCount * 3) : null;
+          let w = 0;
+          for (let i = 0; i < N; i++) {
+            const ix = 3*i;
+            const x = pos[ix], y = pos[ix+1], z = pos[ix+2];
+            const dx = x, dy = y, dz = z - camZ;
+            const depth = Math.hypot(dx, dy, dz);
+            if (depth < MIN_DEPTH) continue;
+            if (REJECT_BLACK && hasColor) {
+              if ((col[ix] === 0 || col[ix] === 0.0) && (col[ix+1] === 0 || col[ix+1] === 0.0) && (col[ix+2] === 0 || col[ix+2] === 0.0)) {
+                continue;
+              }
+            }
+            const j = 3*w;
+            newPos[j] = x; newPos[j+1] = y; newPos[j+2] = z;
+            if (hasColor) { newCol[j] = col[ix]; newCol[j+1] = col[ix+1]; newCol[j+2] = col[ix+2]; }
+            w++;
+          }
+    
+          const newGeom = new THREE.BufferGeometry();
+          newGeom.setAttribute('position', new THREE.BufferAttribute(newPos, 3));
+          if (hasColor) newGeom.setAttribute('color', new THREE.BufferAttribute(newCol, 3));
+    
+          // Material: fixed on-screen size, no discards
+          const material = new THREE.PointsMaterial({
+            size: PIXEL_POINT_SIZE,
+            sizeAttenuation: false,
+            vertexColors: hasColor,
+            color: 0xffffff,
+            transparent: true,
+            depthWrite: false
+          });
+    
+          const cloud = new THREE.Points(newGeom, material);
+          cloud.rotation.x = Math.PI / 2;
+          scene.add(cloud);
+    
+          animate();
+        });
+    
+        function resize() {
+          const w = canvas.clientWidth, h = canvas.clientHeight;
+          if (canvas.width !== w || canvas.height !== h) {
+            renderer.setSize(w, h, false);
+            camera.aspect = w / h; camera.updateProjectionMatrix();
+          }
+        }
+    
+        function animate() {
+          resize();
+          if (autoRotate) scene.rotation.y += 0.0025;
+          controls.update();
+          renderer.render(scene, camera);
+          requestAnimationFrame(animate);
+        }
+      }
+    })();
+    </script>
+    
+
+
+
+
+
+
+
+
+
 
     <section class="section" id="BibTeX">
         <div class="container content is-max-desktop">
@@ -614,7 +834,7 @@
             </div>
         </div>
     </footer>
-    <script>function e() { Swal.fire({ title: "Soon", text: "To be Done.", icon: "info", confirmButtonText: "Sure", timer: 1e3 }) } document.getElementById("pubBtn").addEventListener("click", e), document.getElementById("arxivBtn").addEventListener("click", e), document.getElementById("videoBtn").addEventListener("click", e), document.getElementById("codeBtn").addEventListener("click", e), document.getElementById("dataBtn").addEventListener("click", e);</script>
+    
 </body>
 
 </html>
