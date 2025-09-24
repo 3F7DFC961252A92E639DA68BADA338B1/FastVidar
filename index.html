@@ -220,7 +220,8 @@
                         href="https://rvlab.snu.ac.kr/research/omnistereo">Omnidirectional Stereo Dataset</a> training
                     set and evaluating on the test set. Layout: <strong>Top left</strong> ERP-converted inputs;
                     <strong>Bottom left</strong> omnidirectional depth maps (ERP); <strong>Top right</strong> colored
-                    BEV point cloud; <strong>Bottom right</strong> colored FPV.</p>
+                    BEV point cloud; <strong>Bottom right</strong> colored FPV.
+                </p>
                 <video class="video-full-item" autoplay controls muted loop playsinline>
                     <source src="/FastVidar/street_output_compress.8bfad10c.mp4" type="video/mp4"> Your browser does not
                     support the video tag.
@@ -236,10 +237,12 @@
             <!-- Part 1: Lazy-loaded 4x4 PLY Viewer Grid -->
             <h3 class="is-4 title">Part I: Fused Point Clouds (PLY)</h3>
             <p>Trained on HM3D; zero-shot transfer evaluated on 2D3D-S, indicating generalization capability.</p>
+            <p>Click on the point cloud to interact with the viewer.</p>
 
             <div id="ply-grid" class="ply-grid"></div>
             <!-- Part 2: Qualitative Depth Maps -->
-            <h3 class="is-4 title" style="margin-top:1.5rem;">Part II: Omnidirectional Depth-based Mapping using Odometry</h3>
+            <h3 class="is-4 title" style="margin-top:1.5rem;">Part II: Omnidirectional Depth-based Mapping using
+                Odometry In The Wild</h3>
             <figure class="has-text-centered is-centered video-item-full-container">
                 <video class="video-full-item" autoplay controls muted loop playsinline>
                     <source src="/FastVidar/naive_mapping329.9de5f01d.mp4" type="video/mp4"> Your browser does not
@@ -394,176 +397,197 @@
     <!-- Lazy loader for 4x4 PLY grid -->
     <script>
         (function () {
-            const container = document.getElementById('ply-grid');
-            if (!container) return;
-            const files = [
-                '/FastVidar/plys/area_1_000005_pred_b0.ply',
-                '/FastVidar/plys/area_1_000161_pred_b0.ply',
-                '/FastVidar/plys/area_1_000301_pred_b0.ply',
-                '/FastVidar/plys/area_1_000325_pred_b0.ply',
-                '/FastVidar/plys/area_1_000577_pred_b0.ply',
-                '/FastVidar/plys/area_1_000661_pred_b0.ply',
-                '/FastVidar/plys/area_1_001009_pred_b0.ply',
-                '/FastVidar/plys/area_1_001013_pred_b0.ply',
-                '/FastVidar/plys/area_1_001349_pred_b0.ply',
-                '/FastVidar/plys/area_1_002197_pred_b0.ply',
-                '/FastVidar/plys/area_1_002325_pred_b0.ply',
-                '/FastVidar/plys/area_2_000729_pred_b0.ply',
-                '/FastVidar/plys/area_2_002573_pred_b0.ply',
-                '/FastVidar/plys/area_2_003605_pred_b0.ply',
-                '/FastVidar/plys/area_2_004181_pred_b0.ply',
-                '/FastVidar/plys/area_2_004581_pred_b0.ply'
-            ];
-            const cells = [];
-            files.forEach((src, idx) => {
-                const cell = document.createElement('div');
-                cell.className = 'ply-cell';
-                const caption = document.createElement('div');
-                caption.className = 'ply-caption';
-                caption.textContent = `#${idx + 1}`;
-                const canvas = document.createElement('canvas');
-                canvas.className = 'ply-canvas';
-                cell.appendChild(canvas);
-                cell.appendChild(caption);
-                container.appendChild(cell);
-                cells.push({ canvas, src });
-            });
-
-            const onIntersect = (entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        observer.unobserve(entry.target);
-                        const canvas = entry.target.querySelector('.ply-canvas');
-                        const src = entry.target.__src;
-                        initViewer(canvas, src);
-                    }
-                });
-            };
-
-            const io = new IntersectionObserver(onIntersect, { rootMargin: '200px' });
-            const loaders = [];
-            Array.from(container.children).forEach((el, i) => { el.__src = files[i]; io.observe(el); });
-
-            function initViewer(canvas, src) {
-                const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-                renderer.outputColorSpace = THREE.SRGBColorSpace;
-                renderer.toneMapping = THREE.NoToneMapping;
-                renderer.setPixelRatio(window.devicePixelRatio || 1);
-                renderer.setClearColor(0x000000, 0);
-
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.01, 1000);
-                scene.add(new THREE.AmbientLight(0x666666));
-                const light = new THREE.DirectionalLight(0xffffff, 0.9); light.position.set(1, 1, 1); scene.add(light);
-                camera.position.set(0, 0, 2.2);
-
-                const controls = new THREE.OrbitControls(camera, canvas);
-                controls.enableDamping = true;
-                controls.dampingFactor = 0.08;
-                controls.enablePan = true;
-                controls.minDistance = 0.2;
-                controls.maxDistance = 10;
-                controls.enabled = false; // 初始禁用交互
-                let autoRotate = true;    // 初始自动旋转
-                canvas.style.cursor = 'pointer';
-
-                const loader = new THREE.PLYLoader();
-                loader.load(src, geometry => {
-                    // 如果没有 color，但有 r/g/b，则拼 color 并归一化
-                    if (!geometry.hasAttribute('color') &&
-                        geometry.hasAttribute('red') &&
-                        geometry.hasAttribute('green') &&
-                        geometry.hasAttribute('blue')) {
-                        const r = geometry.getAttribute('red').array;
-                        const g = geometry.getAttribute('green').array;
-                        const b = geometry.getAttribute('blue').array;
-                        const n = Math.min(r.length, g.length, b.length);
-                        const rgb = new Float32Array(n * 3);
-                        const k = (r.BYTES_PER_ELEMENT === 1) ? 1 / 255 : 1.0;
-                        for (let i = 0; i < n; i++) {
-                            rgb[3 * i + 0] = r[i] * k;
-                            rgb[3 * i + 1] = g[i] * k;
-                            rgb[3 * i + 2] = b[i] * k;
-                        }
-                        geometry.setAttribute('color', new THREE.BufferAttribute(rgb, 3));
-                        geometry.deleteAttribute('red');
-                        geometry.deleteAttribute('green');
-                        geometry.deleteAttribute('blue');
-                    }
-
-                    // sRGB -> Linear
-                    if (geometry.hasAttribute('color')) {
-                        const arr = geometry.getAttribute('color').array;
-                        const tmp = new THREE.Color();
-                        for (let i = 0; i < arr.length; i += 3) {
-                            tmp.setRGB(arr[i], arr[i + 1], arr[i + 2]).convertSRGBToLinear();
-                            arr[i] = tmp.r; arr[i + 1] = tmp.g; arr[i + 2] = tmp.b;
-                        }
-                        geometry.getAttribute('color').needsUpdate = true;
-                    }
-
-                    const material = new THREE.PointsMaterial({
-                        size: 0.01,
-                        vertexColors: geometry.hasAttribute('color'),
-                        color: 0xffffff
-                    });
-
-                    fitPointSize(material, camera, canvas, 2.2); // 2.0~3.0 自己试
-
-                    const cloud = new THREE.Points(geometry, material);
-                    // 如需绕 X 轴旋转 90°
-                    cloud.rotation.x = Math.PI / 2;
-                    scene.add(cloud);
-
-                    animate();
-                });
-
-                function resize() {
-                    const w = canvas.clientWidth, h = canvas.clientHeight;
-                    if (canvas.width !== w || canvas.height !== h) {
-                        renderer.setSize(w, h, false);
-                        camera.aspect = w / h; camera.updateProjectionMatrix();
-                    }
-                }
-
-                function setPointSizeInPixels(material, camera, px, canvas) {
-                // 近似换算：size_world ≈ px * (2 * z * tan(fov/2)) / canvas.height
-                const z = camera.position.length(); // 相机到原点距离
-                const fovRad = camera.fov * Math.PI / 180;
-                const sizeWorld = px * (2 * z * Math.tan(fovRad / 2)) / canvas.clientHeight;
-                material.size = sizeWorld;
-                }
-
-                function fitPointSize(material, camera, canvas, px = 2.2) {
-                setPointSizeInPixels(material, camera, px, canvas);
-                }
-
-
-                function animate() {
-                    resize();
-                    if (autoRotate) {
-                        scene.rotation.y += 0.0025;
-                    }
-                    controls.update();
-                    renderer.render(scene, camera);
-                    requestAnimationFrame(animate);
-                    fitPointSize(material, camera, canvas, 2.2);
-                }
-
-                // 首次点击切换为交互模式
-                function enableInteractionOnce() {
-                    controls.enabled = true;
-                    autoRotate = false;
-                    canvas.style.cursor = 'grab';
-                }
-                canvas.addEventListener('pointerdown', enableInteractionOnce, { once: true });
+          // ===== 可调常量（无工具栏） =====
+          const FILES = [
+            '/FastVidar/plys/area_1_000577_pred_b0.ply',
+            '/FastVidar/plys/area_3_000313_pred_b0.ply',
+            '/FastVidar/plys/area_5a_002193_pred_b0.ply',
+            '/FastVidar/plys/area_3_002337_pred_b0.ply',
+            '/FastVidar/plys/area_1_001013_pred_b0.ply',
+            '/FastVidar/plys/area_3_000493_pred_b0.ply',
+            '/FastVidar/plys/area_1_001349_pred_b0.ply',
+            '/FastVidar/plys/area_1_002197_pred_b0.ply',
+            '/FastVidar/plys/area_1_002325_pred_b0.ply',
+            '/FastVidar/plys/area_5b_000113_pred_b0.ply',
+            '/FastVidar/plys/area_5b_005337_pred_b0.ply',
+            '/FastVidar/plys/area_2_002573_pred_b0.ply',
+            '/FastVidar/plys/area_2_003605_pred_b0.ply',
+            '/FastVidar/plys/area_2_004181_pred_b0.ply',
+            '/FastVidar/plys/area_2_004581_pred_b0.ply',
+            '/FastVidar/plys/area_3_002081_pred_b0.ply',
+          ];
+          const VIEW_FOV = 90;
+          const CAM_Z = 0.01;
+          const PIXEL_POINT_SIZE = 3.0; // 屏幕像素大小（禁用近大远小）
+          const BRIGHT_GAIN = 1.6;      // 线性空间亮度增益（固定）
+        
+          // ===== 轻量样式（无工具栏） =====
+          const style = document.createElement('style');
+          style.textContent = `
+            .ply-cell{position:relative}
+            .ply-caption{
+              position:absolute; left:8px; bottom:6px; z-index:1;
+              color:#fff; background:rgba(0,0,0,.45);
+              padding:2px 6px; border-radius:6px; font:12px/1.2 sans-serif;
             }
+            .ply-canvas{width:100%; height:260px; display:block; outline:0; cursor:pointer}
+            @media(min-width:900px){ .ply-canvas{ height:320px } }
+            @media(min-width:1200px){ .ply-canvas{ height:360px } }
+          `;
+          document.head.appendChild(style);
+        
+          const container = document.getElementById('ply-grid');
+          if (!container) return;
+        
+          // 构建网格（懒加载）
+          FILES.forEach((src, idx) => {
+            const cell = document.createElement('div');
+            cell.className = 'ply-cell';
+        
+            const caption = document.createElement('div');
+            caption.className = 'ply-caption';
+            caption.textContent = `#${idx + 1}`;
+        
+            const canvas = document.createElement('canvas');
+            canvas.className = 'ply-canvas';
+            canvas.tabIndex = 0;
+        
+            cell.appendChild(canvas);
+            cell.appendChild(caption);
+            container.appendChild(cell);
+            cell.__src = src;
+          });
+        
+          const io = new IntersectionObserver((entries, obs) => {
+            entries.forEach(ent => {
+              if (ent.isIntersecting) {
+                obs.unobserve(ent.target);
+                const canvas = ent.target.querySelector('.ply-canvas');
+                const src = ent.target.__src;
+                initViewer(ent.target, canvas, src);
+              }
+            });
+          }, { rootMargin: '200px' });
+          Array.from(container.children).forEach(el => io.observe(el));
+        
+          function initViewer(cell, canvas, src) {
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            renderer.toneMapping = THREE.NoToneMapping;
+            renderer.setPixelRatio(window.devicePixelRatio || 1);
+            renderer.setClearColor(0x000000, 0);
+        
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(VIEW_FOV, canvas.clientWidth / canvas.clientHeight, 0.01, 1000);
+            scene.add(new THREE.AmbientLight(0x666666));
+            const light = new THREE.DirectionalLight(0xffffff, 0.9);
+            light.position.set(1, 1, 1); scene.add(light);
+            camera.position.set(0, 0, CAM_Z);
+        
+            const controls = new THREE.OrbitControls(camera, canvas);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.08;
+            controls.enablePan = true;
+            controls.minDistance = 0.2;
+            controls.maxDistance = 10;
+            controls.enabled = false; // 初始禁用交互
+        
+            // 自动旋转默认开；点击外面失焦后会恢复
+            let autoRotate = true;
+        
+            // —— 交互逻辑：每次点击都可进入交互（不再用 once）
+            canvas.addEventListener('pointerdown', () => {
+              controls.enabled = true;
+              autoRotate = false;
+              canvas.style.cursor = 'grab';
+            });
+        
+            // —— 失焦：点击页面其它地方 -> 退出交互并恢复旋转
+            document.addEventListener('pointerdown', (ev) => {
+              if (!cell.contains(ev.target)) {
+                controls.enabled = false;
+                autoRotate = true;
+                canvas.style.cursor = 'pointer';
+              }
+            });
+        
+            // 加载点云（不做任何裁剪/丢弃片元，保留所有点）
+            const loader = new THREE.PLYLoader();
+            loader.load(src, (geometry) => {
+              // 若没有 color 但有 r/g/b，则组装 color 并归一化
+              if (!geometry.hasAttribute('color') &&
+                  geometry.hasAttribute('red') &&
+                  geometry.hasAttribute('green') &&
+                  geometry.hasAttribute('blue')) {
+                const r = geometry.getAttribute('red').array;
+                const g = geometry.getAttribute('green').array;
+                const b = geometry.getAttribute('blue').array;
+                const n = Math.min(r.length, g.length, b.length);
+                const rgb = new Float32Array(n * 3);
+                const k = (r.BYTES_PER_ELEMENT === 1) ? 1 / 255 : 1.0;
+                for (let i = 0; i < n; i++) {
+                  rgb[3*i+0] = r[i] * k;
+                  rgb[3*i+1] = g[i] * k;
+                  rgb[3*i+2] = b[i] * k;
+                }
+                geometry.setAttribute('color', new THREE.BufferAttribute(rgb, 3));
+                // 删除 r/g/b 属性仅是节省显存，不会删点
+                geometry.deleteAttribute('red');
+                geometry.deleteAttribute('green');
+                geometry.deleteAttribute('blue');
+              }
+        
+              // sRGB -> Linear + 固定亮度增益（一次性写回；不删点）
+              if (geometry.hasAttribute('color')) {
+                const attr = geometry.getAttribute('color');
+                const arr = attr.array;
+                const tmp = new THREE.Color();
+                for (let i = 0; i < arr.length; i += 3) {
+                  tmp.setRGB(arr[i], arr[i + 1], arr[i + 2]).convertSRGBToLinear();
+                  arr[i]     = Math.min(1.0, tmp.r * BRIGHT_GAIN);
+                  arr[i + 1] = Math.min(1.0, tmp.g * BRIGHT_GAIN);
+                  arr[i + 2] = Math.min(1.0, tmp.b * BRIGHT_GAIN);
+                }
+                attr.needsUpdate = true;
+              }
+        
+              // 材质：像素大小、不随距离缩放；无任何 discard 逻辑
+              const material = new THREE.PointsMaterial({
+                size: PIXEL_POINT_SIZE,   // 像素单位
+                sizeAttenuation: false,   // 禁用近大远小
+                vertexColors: geometry.hasAttribute('color'),
+                color: 0xffffff,
+                transparent: true,
+                depthWrite: false         // 半透明叠加更自然；不删点
+              });
+        
+              const cloud = new THREE.Points(geometry, material);
+              cloud.rotation.x = Math.PI / 2; // 维持你之前的朝向
+              scene.add(cloud);
+        
+              animate();
+            });
+        
+            function resize() {
+              const w = canvas.clientWidth, h = canvas.clientHeight;
+              if (canvas.width !== w || canvas.height !== h) {
+                renderer.setSize(w, h, false);
+                camera.aspect = w / h; camera.updateProjectionMatrix();
+              }
+            }
+        
+            function animate() {
+              resize();
+              if (autoRotate) scene.rotation.y += 0.0025;
+              controls.update();
+              renderer.render(scene, camera);
+              requestAnimationFrame(animate);
+            }
+          }
+        })();
+        </script>
+        
 
-        }
-        )();
-
-
-    </script>
     <section class="section" id="BibTeX">
         <div class="container content is-max-desktop">
             <h2 class="title">BibTeX</h2>
