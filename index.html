@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description"
+        content="FastViDAR: Real-Time Omnidirectional Depth Estimation via Alternative Hierarchical Attention (ICRA 2026).">
+    <meta name="keywords" content="FastViDAR, Omnidirectional Depth, Fisheye, ERP, Attention, ICRA 2026">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FastViDAR: Real-Time Omnidirectional Depth Estimation via Alternative Hierarchical Attention</title>
+    <script>function a() { dataLayer.push(arguments) } window.dataLayer = window.dataLayer || [], a("js", new Date), a("config", "G-PYVRSFMDRL");</script>
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+    <link rel="stylesheet" href="/FastVidar/index.ae9bf6e8.css">
+    <link rel="stylesheet" href="/FastVidar/index.89480d31.css">
+    <link rel="stylesheet" href="/FastVidar/index.04722759.css">
+    <link rel="stylesheet" href="/FastVidar/index.0f7bf8ad.css">
+    <link rel="stylesheet" href="/FastVidar/index.fa7d0c9b.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="/FastVidar/index.7e449f63.css">
+    <link rel="icon" href="/FastVidar/favicon.5fcec378.svg">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="/FastVidar/index.920580e4.js"></script>
+    <script src="/FastVidar/index.444dc5c4.js"></script>
+    <script src="/FastVidar/index.46f529f0.js"></script>
+    <script src="/FastVidar/index.017cb901.js"></script>
+    <!-- Three.js for PLY lazy viewer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/PLYLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+
+<body>
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container is-max-desktop">
+                <div class="columns is-centered">
+                    <div class="column has-text-centered">
+                        <h1 class="is-1 publication-title title">FastViDAR: Real-Time Omnidirectional Depth
+                            Estimation<br>
+                            via Alternative Hierarchical Attention</h1>
+                        <div class="is-size-5 publication-authors"> <span class="author-block"> <a
+                                    href="mailto:starfalltomountains@outlook.com"> </a><sup></sup></span> </div>
+                        <div class="is-size-5 publication-authors"> <span class="author-block"><sup></sup> </span>
+                        </div>
+                        <div class="column has-text-centered">
+                            <div class="publication-links">
+                                <div class="publication-links"> <span class="link-block"> <button id="pubBtn"
+                                            class="button external-link is-dark is-normal is-rounded"> <span
+                                                class="icon"> <i class="fa-file-pdf fas"></i> </span> <span>Paper</span>
+                                        </button> </span> <span class="link-block"> <button id="arxivBtn"
+                                            class="button external-link is-dark is-normal is-rounded"> <span
+                                                class="icon"> <i class="ai ai-arxiv"></i> </span> <span>arXiv</span>
+                                        </button> </span> <span class="link-block"> <button id="videoBtn"
+                                            class="button external-link is-dark is-normal is-rounded"> <span
+                                                class="icon"> <i class="fa-youtube fab"></i> </span> <span>Video</span>
+                                        </button> </span> <span class="link-block"> <button id="codeBtn"
+                                            class="button external-link is-dark is-normal is-rounded"> <span
+                                                class="icon"> <i class="fa-github fab"></i> </span> <span>Code</span>
+                                        </button> </span> <span class="link-block"> <button id="dataBtn"
+                                            class="button external-link is-dark is-normal is-rounded"> <span
+                                                class="icon"> <i class="fa-images far"></i> </span> <span>Data</span>
+                                        </button> </span> </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 横排3个视频示例 -->
+    <div class="video-gallery">
+        <figure class="video-item-container"> <video class="video-item" autoplay controls muted loop playsinline>
+                <source src="/FastVidar/sunset.bde51fed.mp4" type="video/mp4"> Your browser does not support the video
+                tag.
+            </video>
+            <figcaption>Sunset</figcaption>
+        </figure>
+        <figure class="video-item-container"> <video class="video-item" autoplay controls muted loop playsinline>
+                <source src="/FastVidar/sunny.4be103b3.mp4" type="video/mp4"> Your browser does not support the video
+                tag.
+            </video>
+            <figcaption>Sunny</figcaption>
+        </figure>
+        <figure class="video-item-container"> <video class="video-item" autoplay controls muted loop playsinline>
+                <source src="/FastVidar/cloudy_label.365e911c.mp4" type="video/mp4"> Your browser does not support the
+                video tag.
+            </video>
+            <figcaption>Cloudy</figcaption>
+        </figure>
+    </div>
+
+
+    <div class="video-gallery-grey">
+        <div class="container is-max-desktop">
+            <div class="columns has-text-centered is-centered">
+                <div class="column is-four-fifths">
+                    <div class="video-gallery-grey"></div>
+                    <h2 class="is-3 title">Abstract</h2>
+                    <div class="content has-text-justified">
+                        <p>In this paper we propose <strong>FastViDAR</strong>, a novel framework that takes four
+                            fisheye camera inputs and produces a full 360° depth map along with per-camera depth, fusion
+                            depth, and confidence estimates.</p>
+                        <p>Our main contributions are: (1) We introduce <em>Alternative Hierarchical Attention
+                                (AHA)</em> that efficiently fuses features across views through separate intra-frame and
+                            inter-frame windowed self-attention, achieving cross-view feature mixing with reduced
+                            overhead. (2) We propose a novel <em>ERP fusion</em> approach that projects multi-view depth
+                            estimates to a shared equirectangular coordinate system to obtain the final fusion depth.
+                            (3) We generate ERP image–depth pairs using <em>HM3D</em> and <em>2D3D-S</em> datasets for
+                            comprehensive evaluation, demonstrating competitive zero-shot performance on real datasets
+                            while achieving up to <strong>20 FPS</strong> on NVIDIA Orin NX embedded hardware.</p>
+                        <p>FastViDAR achieves strong accuracy–throughput trade-offs and robust omnidirectional
+                            perception in real-world robotics scenarios.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Framework Section -->
+    <section class="section">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered">
+                <div class="column is-full-width">
+                    <h2 class="is-3 title">Framework</h2>
+                    <p class="content">FastViDAR employs Alternative Hierarchical Attention (AHA) with ERP-centric
+                        processing and ERP fusion for seamless 360° depth. The pipeline alternates local window
+                        attention with per-frame/global summary attention and fuses multi-view depth on a shared ERP
+                        grid.</p>
+                    <div class="fig-gallery">
+                        <!-- Row 1: Overview full-bleed -->
+                        <figure class="fig-wide">
+                            <img src="/FastVidar/pdfs/Overview.png" class="fig-img full-bleed"
+                                alt="Overview (Architecture)">
+                            <figcaption class="fig-cap fig-cap-center">Overview (Architecture)</figcaption>
+                        </figure>
+                        <!-- Row 2: AHA full width -->
+                        <figure class="fig-wide">
+                            <img src="/FastVidar/pdfs/AHA_block.png" class="fig-img full-bleed"
+                                alt="Alternative Hierarchical Attention (AHA)">
+                            <figcaption class="fig-cap fig-cap-center">Alternative Hierarchical Attention (AHA)
+                            </figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benchmark Results Section -->
+    <div class="video-gallery-grey">
+        <section class="section">
+            <div class="container is-max-desktop">
+                <div class="columns is-centered">
+                    <div class="column is-full-width">
+
+                        <h2 class="is-3 title">Benchmark Results</h2>
+                        <div class="table-container">
+                            <table class="table is-fullwidth is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th>Method</th>
+                                        <th>AbsRel ↓</th>
+                                        <th>RMSE ↓</th>
+                                        <th>Log10 ↓</th>
+                                        <th>δ&lt;1.25 ↑</th>
+                                        <th>Time (ms)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>VGGT</td>
+                                        <td>0.557</td>
+                                        <td>1.934</td>
+                                        <td>0.396</td>
+                                        <td>0.043</td>
+                                        <td>120</td>
+                                    </tr>
+                                    <tr>
+                                        <td>OmniStereo</td>
+                                        <td>0.619</td>
+                                        <td>1.450</td>
+                                        <td>0.154</td>
+                                        <td>0.554</td>
+                                        <td>66</td>
+                                    </tr>
+                                    <tr>
+                                        <td>LightStereo-M</td>
+                                        <td>0.125</td>
+                                        <td>0.667</td>
+                                        <td>0.050</td>
+                                        <td>0.851</td>
+                                        <td>33</td>
+                                    </tr>
+                                    <tr class="is-selected">
+                                        <td><strong>FastViDAR</strong></td>
+                                        <td><strong>0.119</strong></td>
+                                        <td><strong>0.433</strong></td>
+                                        <td><strong>0.046</strong></td>
+                                        <td><strong>0.929</strong></td>
+                                        <td>36</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="is-size-7 has-text-grey">Zero-shot on Stanford 2D-3D-S. FastViDAR: 4 ERP views (FOV
+                            220°). LightStereo via ERP-split stereo; VGGT via 8 pinhole projections projected back to
+                            ERP.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- In-domain Video (grey background) -->
+    <section class="section">
+        <div class="video-gallery-white">
+            <h2 class="is-3 title">In-domain Results</h2>
+            <figure class="has-text-centered is-centered video-item-full-container">
+                <p> This video demonstrates the performance achieved by training on the <b>Sunny Subset of</b> the <a
+                        href="https://rvlab.snu.ac.kr/research/omnistereo">Omnidirectional Stereo Dataset</a> training
+                    set and evaluating on the test set. Layout: <strong>Top left</strong> ERP-converted inputs;
+                    <strong>Bottom left</strong> omnidirectional depth maps (ERP); <strong>Top right</strong> colored
+                    BEV point cloud; <strong>Bottom right</strong> colored FPV.</p>
+                <video class="video-full-item" autoplay controls muted loop playsinline>
+                    <source src="/FastVidar/street_output_compress.8bfad10c.mp4" type="video/mp4"> Your browser does not
+                    support the video tag.
+                </video>
+            </figure>
+        </div>
+    </section>
+
+    <!-- Zero-shot Gallery (white background) -->
+    <section class="section">
+        <div class="video-gallery-grey">
+            <h2 class="is-3 title">Zero-shot Results</h2>
+            <!-- Part 1: Lazy-loaded 4x4 PLY Viewer Grid -->
+            <h3 class="is-4 title">Part I: Fused Point Clouds (PLY)</h3>
+            <div id="ply-grid" class="ply-grid"></div>
+            <!-- Part 2: Qualitative Depth Maps -->
+            <h3 class="is-4 title" style="margin-top:1.5rem;">Part II: Qualitative Depth Maps</h3>
+            <figure class="has-text-centered is-centered video-item-full-container">
+                <video class="video-full-item" autoplay controls muted loop playsinline>
+                    <source src="/FastVidar/naive_mapping329.9de5f01d.mp4" type="video/mp4"> Your browser does not
+                    support the video tag.
+                </video>
+            </figure>
+        </div>
+    </section>
+    <section class="section">
+        <div class="video-gallery-grey">
+            <h2 class="is-3 title">Related Links</h2>
+
+        </div>
+    </section>
+    <!-- Simple styles for PLY grid -->
+    <style>
+        .ply-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .ply-cell {
+            position: relative;
+            width: 100%;
+            padding-top: 75%;
+            background: #ffffff;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .ply-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .ply-caption {
+            position: absolute;
+            bottom: 6px;
+            left: 8px;
+            color: #eee;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .video-gallery-grey {
+            background: #f7f7f7;
+            padding: 1.25rem 0.75rem;
+            border-radius: 8px;
+        }
+
+        .video-gallery-white {
+            background: #ffffff;
+            padding: 1.25rem 0.75rem;
+            border-radius: 8px;
+        }
+
+        .fig-gallery {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .fig-wide {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            padding: 10px;
+        }
+
+        .fig-row2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .fig-cell {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fig-fixed-h {
+            height: 360px;
+        }
+
+        .fig-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+        }
+
+        .fit-contain {
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .full-bleed {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .fig-cap {
+            font-size: 0.85rem;
+            color: #444;
+            margin-top: 6px;
+            text-align: left;
+        }
+
+        .fig-cap-center {
+            text-align: center;
+        }
+
+        @media (max-width: 1280px) {
+            .fig-fixed-h {
+                height: 320px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .ply-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .fig-row2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .ply-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fig-fixed-h {
+                height: 260px;
+            }
+        }
+    </style>
+
+    <!-- Lazy loader for 4x4 PLY grid -->
+    <script>
+        (function () {
+            const container = document.getElementById('ply-grid');
+            if (!container) return;
+            const files = [
+                '/FastVidar/plys/area_1_000005_pred_b0.ply',
+                '/FastVidar/plys/area_1_000161_pred_b0.ply',
+                '/FastVidar/plys/area_1_000301_pred_b0.ply',
+                '/FastVidar/plys/area_1_000325_pred_b0.ply',
+                '/FastVidar/plys/area_1_000577_pred_b0.ply',
+                '/FastVidar/plys/area_1_000661_pred_b0.ply',
+                '/FastVidar/plys/area_1_001009_pred_b0.ply',
+                '/FastVidar/plys/area_1_001013_pred_b0.ply',
+                '/FastVidar/plys/area_1_001349_pred_b0.ply',
+                '/FastVidar/plys/area_1_002197_pred_b0.ply',
+                '/FastVidar/plys/area_1_002325_pred_b0.ply',
+                '/FastVidar/plys/area_2_000729_pred_b0.ply',
+                '/FastVidar/plys/area_2_002573_pred_b0.ply',
+                '/FastVidar/plys/area_2_003605_pred_b0.ply',
+                '/FastVidar/plys/area_2_004181_pred_b0.ply',
+                '/FastVidar/plys/area_2_004581_pred_b0.ply'
+            ];
+            const cells = [];
+            files.forEach((src, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'ply-cell';
+                const caption = document.createElement('div');
+                caption.className = 'ply-caption';
+                caption.textContent = `#${idx + 1}`;
+                const canvas = document.createElement('canvas');
+                canvas.className = 'ply-canvas';
+                cell.appendChild(canvas);
+                cell.appendChild(caption);
+                container.appendChild(cell);
+                cells.push({ canvas, src });
+            });
+
+            const onIntersect = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        observer.unobserve(entry.target);
+                        const canvas = entry.target.querySelector('.ply-canvas');
+                        const src = entry.target.__src;
+                        initViewer(canvas, src);
+                    }
+                });
+            };
+
+            const io = new IntersectionObserver(onIntersect, { rootMargin: '200px' });
+            const loaders = [];
+            Array.from(container.children).forEach((el, i) => { el.__src = files[i]; io.observe(el); });
+
+            function initViewer(canvas, src) {
+                const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+                renderer.outputColorSpace = THREE.SRGBColorSpace;
+                renderer.toneMapping = THREE.NoToneMapping;
+                renderer.setPixelRatio(window.devicePixelRatio || 1);
+                renderer.setClearColor(0x000000, 0);
+
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.01, 1000);
+                scene.add(new THREE.AmbientLight(0x666666));
+                const light = new THREE.DirectionalLight(0xffffff, 0.9); light.position.set(1, 1, 1); scene.add(light);
+                camera.position.set(0, 0, 2.2);
+
+                const controls = new THREE.OrbitControls(camera, canvas);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.08;
+                controls.enablePan = true;
+                controls.minDistance = 0.2;
+                controls.maxDistance = 10;
+
+                const loader = new THREE.PLYLoader();
+                loader.load(src, geometry => {
+                    // 如果没有 color，但有 r/g/b，则拼 color 并归一化
+                    if (!geometry.hasAttribute('color') &&
+                        geometry.hasAttribute('red') &&
+                        geometry.hasAttribute('green') &&
+                        geometry.hasAttribute('blue')) {
+                        const r = geometry.getAttribute('red').array;
+                        const g = geometry.getAttribute('green').array;
+                        const b = geometry.getAttribute('blue').array;
+                        const n = Math.min(r.length, g.length, b.length);
+                        const rgb = new Float32Array(n * 3);
+                        const k = (r.BYTES_PER_ELEMENT === 1) ? 1 / 255 : 1.0;
+                        for (let i = 0; i < n; i++) {
+                            rgb[3 * i + 0] = r[i] * k;
+                            rgb[3 * i + 1] = g[i] * k;
+                            rgb[3 * i + 2] = b[i] * k;
+                        }
+                        geometry.setAttribute('color', new THREE.BufferAttribute(rgb, 3));
+                        geometry.deleteAttribute('red');
+                        geometry.deleteAttribute('green');
+                        geometry.deleteAttribute('blue');
+                    }
+
+                    // sRGB -> Linear
+                    if (geometry.hasAttribute('color')) {
+                        const arr = geometry.getAttribute('color').array;
+                        const tmp = new THREE.Color();
+                        for (let i = 0; i < arr.length; i += 3) {
+                            tmp.setRGB(arr[i], arr[i + 1], arr[i + 2]).convertSRGBToLinear();
+                            arr[i] = tmp.r; arr[i + 1] = tmp.g; arr[i + 2] = tmp.b;
+                        }
+                        geometry.getAttribute('color').needsUpdate = true;
+                    }
+
+                    const material = new THREE.PointsMaterial({
+                        size: 0.01,
+                        vertexColors: geometry.hasAttribute('color'),
+                        color: 0xffffff
+                    });
+
+                    fitPointSize(material, camera, canvas, 2.2); // 2.0~3.0 自己试
+
+                    const cloud = new THREE.Points(geometry, material);
+                    // 如需绕 X 轴旋转 90°
+                    cloud.rotation.x = Math.PI / 2;
+                    scene.add(cloud);
+
+                    animate();
+                });
+
+                function resize() {
+                    const w = canvas.clientWidth, h = canvas.clientHeight;
+                    if (canvas.width !== w || canvas.height !== h) {
+                        renderer.setSize(w, h, false);
+                        camera.aspect = w / h; camera.updateProjectionMatrix();
+                    }
+                }
+
+                function setPointSizeInPixels(material, camera, px, canvas) {
+                // 近似换算：size_world ≈ px * (2 * z * tan(fov/2)) / canvas.height
+                const z = camera.position.length(); // 相机到原点距离
+                const fovRad = camera.fov * Math.PI / 180;
+                const sizeWorld = px * (2 * z * Math.tan(fovRad / 2)) / canvas.clientHeight;
+                material.size = sizeWorld;
+                }
+
+                function fitPointSize(material, camera, canvas, px = 2.2) {
+                setPointSizeInPixels(material, camera, px, canvas);
+                }
+
+
+                function animate() {
+                    resize();
+                    controls.update();
+                    renderer.render(scene, camera);
+                    requestAnimationFrame(animate);
+                    fitPointSize(material, camera, canvas, 2.2);
+                }
+            }
+
+        }
+        )();
+
+
+    </script>
+    <section class="section" id="BibTeX">
+        <div class="container content is-max-desktop">
+            <h2 class="title">BibTeX</h2>
+            <pre><code>@inproceedings{fastvidar_icra2026,
+  title     = {FastViDAR: Real-Time Omnidirectional Depth Estimation via Alternative Hierarchical Attention},
+  author    = {Author, A. and Author, B. and Author, C.},
+  booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+  year      = {2026}
+}</code></pre>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-8">
+                    <div class="content">
+                        <p> This website is licensed under a <a rel="license"
+                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons
+                                Attribution-ShareAlike 4.0 International License</a>.<a
+                                href="https://github.com/nerfies/nerfies.github.io"> Templates comes from the repo</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>function e() { Swal.fire({ title: "Soon", text: "To be Done.", icon: "info", confirmButtonText: "Sure", timer: 1e3 }) } document.getElementById("pubBtn").addEventListener("click", e), document.getElementById("arxivBtn").addEventListener("click", e), document.getElementById("videoBtn").addEventListener("click", e), document.getElementById("codeBtn").addEventListener("click", e), document.getElementById("dataBtn").addEventListener("click", e);</script>
+</body>
+
+</html>
