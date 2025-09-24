@@ -235,9 +235,11 @@
             <h2 class="is-3 title">Zero-shot Results</h2>
             <!-- Part 1: Lazy-loaded 4x4 PLY Viewer Grid -->
             <h3 class="is-4 title">Part I: Fused Point Clouds (PLY)</h3>
+            <p>Trained on HM3D; zero-shot transfer evaluated on 2D3D-S, indicating generalization capability.</p>
+
             <div id="ply-grid" class="ply-grid"></div>
             <!-- Part 2: Qualitative Depth Maps -->
-            <h3 class="is-4 title" style="margin-top:1.5rem;">Part II: Qualitative Depth Maps</h3>
+            <h3 class="is-4 title" style="margin-top:1.5rem;">Part II: Omnidirectional Depth-based Mapping using Odometry</h3>
             <figure class="has-text-centered is-centered video-item-full-container">
                 <video class="video-full-item" autoplay controls muted loop playsinline>
                     <source src="/FastVidar/naive_mapping329.9de5f01d.mp4" type="video/mp4"> Your browser does not
@@ -461,6 +463,9 @@
                 controls.enablePan = true;
                 controls.minDistance = 0.2;
                 controls.maxDistance = 10;
+                controls.enabled = false; // 初始禁用交互
+                let autoRotate = true;    // 初始自动旋转
+                canvas.style.cursor = 'pointer';
 
                 const loader = new THREE.PLYLoader();
                 loader.load(src, geometry => {
@@ -536,11 +541,22 @@
 
                 function animate() {
                     resize();
+                    if (autoRotate) {
+                        scene.rotation.y += 0.0025;
+                    }
                     controls.update();
                     renderer.render(scene, camera);
                     requestAnimationFrame(animate);
                     fitPointSize(material, camera, canvas, 2.2);
                 }
+
+                // 首次点击切换为交互模式
+                function enableInteractionOnce() {
+                    controls.enabled = true;
+                    autoRotate = false;
+                    canvas.style.cursor = 'grab';
+                }
+                canvas.addEventListener('pointerdown', enableInteractionOnce, { once: true });
             }
 
         }
